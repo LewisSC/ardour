@@ -53,7 +53,7 @@
 namespace ARDOUR {
 
 class Session;
-class Pannable;
+class PanControls;
 class BufferSet;
 class AudioBuffer;
 class Speakers;
@@ -61,7 +61,7 @@ class Speakers;
 class LIBARDOUR_API Panner : public PBD::Stateful, public PBD::ScopedConnectionList
 {
 public:
-	Panner (boost::shared_ptr<Pannable>);
+	Panner (boost::shared_ptr<PanControls>);
 	~Panner ();
 
 	virtual boost::shared_ptr<Speakers> get_speakers() const { return boost::shared_ptr<Speakers>(); }
@@ -161,7 +161,7 @@ public:
 	int set_state (const XMLNode&, int version);
 	XMLNode& get_state ();
 
-	boost::shared_ptr<Pannable> pannable() const { return _pannable; }
+	boost::shared_ptr<PanControls> pan_ctrls() const { return _pan_ctrls; }
 
 	static bool equivalent (pan_t a, pan_t b) {
 		return fabsf (a - b) < 0.002; // about 1 degree of arc for a stereo panner
@@ -176,7 +176,7 @@ public:
 	virtual void thaw ();
 
 protected:
-	boost::shared_ptr<Pannable> _pannable;
+	boost::shared_ptr<PanControls> _pan_ctrls;
 
 	virtual void distribute_one (AudioBuffer&, BufferSet& obufs, gain_t gain_coeff, pframes_t nframes, uint32_t which) = 0;
 	virtual void distribute_one_automated (AudioBuffer&, BufferSet& obufs,
@@ -196,7 +196,7 @@ struct LIBARDOUR_API PanPluginDescriptor {
 	int32_t in;
 	int32_t out;
 	uint32_t priority;
-	ARDOUR::Panner* (*factory)(boost::shared_ptr<ARDOUR::Pannable>, boost::shared_ptr<ARDOUR::Speakers>);
+	ARDOUR::Panner* (*factory)(boost::shared_ptr<ARDOUR::PanControls>, boost::shared_ptr<ARDOUR::Speakers>);
 };
 }
 

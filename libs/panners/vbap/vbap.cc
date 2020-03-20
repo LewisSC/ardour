@@ -38,7 +38,7 @@
 #include "ardour/audio_buffer.h"
 #include "ardour/buffer_set.h"
 #include "ardour/pan_controllable.h"
-#include "ardour/pannable.h"
+#include "ardour/pan_controls.h"
 #include "ardour/speakers.h"
 
 #include "vbap.h"
@@ -76,14 +76,14 @@ VBAPanner::Signal::resize_gains (uint32_t n)
         gains.assign (n, 0.0);
 }
 
-VBAPanner::VBAPanner (boost::shared_ptr<Pannable> p, boost::shared_ptr<Speakers> s)
+VBAPanner::VBAPanner (boost::shared_ptr<PanControls> p, boost::shared_ptr<Speakers> s)
 	: Panner (p)
 	, _speakers (new VBAPSpeakers (s))
 {
-        _pannable->pan_azimuth_control->Changed.connect_same_thread (*this, boost::bind (&VBAPanner::update, this));
-        _pannable->pan_elevation_control->Changed.connect_same_thread (*this, boost::bind (&VBAPanner::update, this));
-        _pannable->pan_width_control->Changed.connect_same_thread (*this, boost::bind (&VBAPanner::update, this));
-        if (!_pannable->has_state()) {
+        _pan_ctrls->pan_azimuth_control()->Changed.connect_same_thread (*this, boost::bind (&VBAPanner::update, this));
+        _pan_ctrls->pan_elevation_control()->Changed.connect_same_thread (*this, boost::bind (&VBAPanner::update, this));
+        _pan_ctrls->pan_width_control()->Changed.connect_same_thread (*this, boost::bind (&VBAPanner::update, this));
+        if (!_pan_ctrls->has_state()) {
                 reset();
         }
 
@@ -112,7 +112,7 @@ VBAPanner::configure_io (ChanCount in, ChanCount /* ignored - we use Speakers */
         clear_signals ();
 
         for (uint32_t i = 0; i < n; ++i) {
-                Signal* s = new Signal (_pannable->session(), *this, i, _speakers->n_speakers());
+                Signal* s = new Signal (_pan_ctrls->session(), *this, i, _speakers->n_speakers());
                 _signals.push_back (s);
 
         }
@@ -124,11 +124,11 @@ void
 VBAPanner::update ()
 {
         /* recompute signal directions based on panner azimuth and, if relevant, width (diffusion) and elevation parameters */
-        double elevation = _pannable->pan_elevation_control->get_value() * 90.0;
+        double elevation = _pan_ctrls->pan_elevation_control()->get_value() * 90.0;
 
         if (_signals.size() > 1) {
-                double w = - (_pannable->pan_width_control->get_value());
-                double signal_direction = 1.0 - (_pannable->pan_azimuth_control->get_value() + (w/2));
+                double w = - (_pan_ctrls->pan_width_control()->get_value());
+                double signal_direction = 1.0 - (_pan_ctrls->pan_azimuth_control()->get_value() + (w/2));
                 double grd_step_per_signal = w / (_signals.size() - 1);
                 for (vector<Signal*>::iterator s = _signals.begin(); s != _signals.end(); ++s) {
 
@@ -143,7 +143,7 @@ VBAPanner::update ()
                         signal_direction += grd_step_per_signal;
                 }
         } else if (_signals.size() == 1) {
-                double center = (1.0 - _pannable->pan_azimuth_control->get_value()) * 360.0;
+                double center = (1.0 - _pan_ctrls->pan_azimuth_control()->get_value()) * 360.0;
 
                 /* width has no role to play if there is only 1 signal: VBAP does not do "diffusion" of a single channel */
 
@@ -375,7 +375,7 @@ VBAPanner::get_state ()
 }
 
 Panner*
-VBAPanner::factory (boost::shared_ptr<Pannable> p, boost::shared_ptr<Speakers> s)
+VBAPanner::factory (boost::shared_ptr<PanControls> p, boost::shared_ptr<Speakers> s)
 {
 	return new VBAPanner (p, s);
 }
@@ -417,7 +417,7 @@ VBAPanner::describe_parameter (Evoral::Parameter p)
         case PanElevationAutomation:
                 return _("Elevation");
         default:
-                return _pannable->describe_parameter (p);
+                return _pan_ctrls->describe_parameter (p);
         }
 }
 
@@ -465,19 +465,19 @@ VBAPanner::set_position (double p)
 	int over = p;
 	over -= (p >= 0) ? 0 : 1;
 	p -= (double)over;
-	_pannable->pan_azimuth_control->set_value (p, Controllable::NoGroup);
+	_pan_ctrls->pan_azimuth_control()->set_value (p, Controllable::NoGroup);
 }
 
 void
 VBAPanner::set_width (double w)
 {
-	_pannable->pan_width_control->set_value (min (1.0, max (-1.0, w)), Controllable::NoGroup);
+	_pan_ctrls->pan_width_control()->set_value (min (1.0, max (-1.0, w)), Controllable::NoGroup);
 }
 
 void
 VBAPanner::set_elevation (double e)
 {
-	_pannable->pan_elevation_control->set_value (min (1.0, max (0.0, e)), Controllable::NoGroup);
+	_pan_ctrls->pan_elevation_control()->set_value (min (1.0, max (0.0, e)), Controllable::NoGroup);
 }
 
 void

@@ -22,23 +22,23 @@
 #include "ardour/buffer_set.h"
 #include "ardour/debug.h"
 #include "ardour/panner.h"
-#include "ardour/pannable.h"
+#include "ardour/pan_controls.h"
 
 #include "pbd/i18n.h"
 
 using namespace std;
 using namespace ARDOUR;
 
-Panner::Panner (boost::shared_ptr<Pannable> p)
+Panner::Panner (boost::shared_ptr<PanControls> p)
 	: _frozen (0)
 {
 	// boost_debug_shared_ptr_mark_interesting (this, "panner");
-	_pannable = p;
+	_pan_ctrls = p;
 }
 
 Panner::~Panner ()
 {
-	DEBUG_TRACE(PBD::DEBUG::Destruction, string_compose ("panner @ %1 destructor, pannable is %2 @ %3\n", this, _pannable, &_pannable));
+	DEBUG_TRACE(PBD::DEBUG::Destruction, string_compose ("panner @ %1 destructor, pannable is %2 @ %3\n", this, _pan_ctrls, &_pan_ctrls));
 }
 
 XMLNode&
@@ -71,37 +71,37 @@ Panner::distribute_automated (BufferSet& ibufs, BufferSet& obufs,
 void
 Panner::set_automation_state (AutoState state)
 {
-	_pannable->set_automation_state (state);
+	_pan_ctrls->set_automation_state (state);
 }
 
 AutoState
 Panner::automation_state () const
 {
-	return _pannable->automation_state();
+	return _pan_ctrls->automation_state();
 }
 
 bool
 Panner::touching () const
 {
-	return _pannable->touching ();
+	return _pan_ctrls->touching ();
 }
 
 set<Evoral::Parameter>
 Panner::what_can_be_automated() const
 {
-	return _pannable->what_can_be_automated ();
+	return _pan_ctrls->what_can_be_automated ();
 }
 
 string
 Panner::describe_parameter (Evoral::Parameter p)
 {
-	return _pannable->describe_parameter (p);
+	return _pan_ctrls->describe_parameter (p);
 }
 
 string
 Panner::value_as_string (boost::shared_ptr<const AutomationControl> ac) const
 {
-	return _pannable->value_as_string (ac);
+	return _pan_ctrls->value_as_string (ac);
 }
 
 int

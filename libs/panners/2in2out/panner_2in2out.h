@@ -40,7 +40,7 @@ namespace ARDOUR {
 class Panner2in2out : public Panner
 {
   public:
-	Panner2in2out (boost::shared_ptr<Pannable>);
+	Panner2in2out (boost::shared_ptr<PanControls>);
 	~Panner2in2out ();
 
 	ChanCount in() const { return ChanCount (DataType::AUDIO, 2); }
@@ -60,7 +60,7 @@ class Panner2in2out : public Panner
 
 	std::set<Evoral::Parameter> what_can_be_automated() const;
 
-	static Panner* factory (boost::shared_ptr<Pannable>, boost::shared_ptr<Speakers>);
+	static Panner* factory (boost::shared_ptr<PanControls>, boost::shared_ptr<Speakers>);
 
 	std::string describe_parameter (Evoral::Parameter);
 	std::string value_as_string (boost::shared_ptr<const AutomationControl>) const;

@@ -33,12 +33,12 @@
 namespace ARDOUR {
 
 class Speakers;
-class Pannable;
+class PanControls;
 
 class VBAPanner : public Panner
 {
 public:
-	VBAPanner (boost::shared_ptr<Pannable>, boost::shared_ptr<Speakers>);
+	VBAPanner (boost::shared_ptr<PanControls>, boost::shared_ptr<Speakers>);
 	~VBAPanner ();
 
         void configure_io (ChanCount in, ChanCount /* ignored - we use Speakers */);
@@ -51,7 +51,7 @@ public:
 
         std::set<Evoral::Parameter> what_can_be_automated() const;
 
-	static Panner* factory (boost::shared_ptr<Pannable>, boost::shared_ptr<Speakers>);
+	static Panner* factory (boost::shared_ptr<PanControls>, boost::shared_ptr<Speakers>);
 
 	void distribute (BufferSet& ibufs, BufferSet& obufs, gain_t gain_coeff, pframes_t nframes);
 
