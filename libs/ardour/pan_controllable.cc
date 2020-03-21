@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "ardour/pannable.h"
+#include "ardour/pan_controls.h"
 #include "ardour/panner.h"
 #include "ardour/pan_controllable.h"
 
