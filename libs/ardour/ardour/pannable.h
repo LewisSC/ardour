@@ -88,8 +88,6 @@ public:
 		return Automatable::describe_parameter (param);
 	}
 
-	std::string value_as_string (boost::shared_ptr<const AutomationControl>) const;
-
 	void start_touch (double when);
 	void stop_touch (double when);
 	bool touching() const { return g_atomic_int_get (const_cast<gint*>(&_touching)); }

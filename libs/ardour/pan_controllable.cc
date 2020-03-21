@@ -65,5 +65,5 @@ PanControllable::get_user_string () const
 		snprintf(buf, sizeof(buf), "%.0f%%", 100.f * v);
 		return buf;
 	}
-	return owner->value_as_string (boost::dynamic_pointer_cast<const AutomationControl>(shared_from_this()));
+	return owner->panner()->value_as_string (boost::dynamic_pointer_cast<const AutomationControl>(shared_from_this()));
 }
