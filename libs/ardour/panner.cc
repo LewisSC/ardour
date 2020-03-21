@@ -68,12 +68,6 @@ Panner::distribute_automated (BufferSet& ibufs, BufferSet& obufs,
 	}
 }
 
-set<Evoral::Parameter>
-Panner::what_can_be_automated() const
-{
-	return _pan_ctrls->what_can_be_automated ();
-}
-
 int
 Panner::set_state (XMLNode const &, int)
 {

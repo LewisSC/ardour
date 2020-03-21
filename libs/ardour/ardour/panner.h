@@ -58,6 +58,7 @@ class BufferSet;
 class AudioBuffer;
 class Speakers;
 class PanControllable;
+class Pannable;
 
 class LIBARDOUR_API Panner : public PBD::Stateful, public PBD::ScopedConnectionList
 {
@@ -106,8 +107,6 @@ public:
 
 	/* azimut, width or elevation updated -> recalc signal_position ->  emit Changed */
 	PBD::Signal0<void> SignalPositionChanged;
-
-	virtual std::set<Evoral::Parameter> what_can_be_automated() const;
 
 	static double azimuth_to_lr_fract (double azi) {
 		/* 180.0 degrees=> left => 0.0 */
@@ -170,8 +169,16 @@ public:
 	virtual void thaw ();
 
 protected:
-	friend PanControllable;
+	friend PanControllable; // allow value_as_string
+	friend PanControls; // allow what_can_be_automated
+	friend Pannable; // allow what_can_be_automated
+
 	boost::shared_ptr<PanControls> _pan_ctrls;
+	std::set<Evoral::Parameter> _can_automate_list;
+
+	const std::set<Evoral::Parameter>& what_can_be_automated() const {
+		return _can_automate_list;
+	}
 
 	virtual std::string value_as_string (boost::shared_ptr<const AutomationControl>) const = 0;
 

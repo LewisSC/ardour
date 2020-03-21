@@ -68,9 +68,7 @@ public:
 
 	Session& session() { return _session; }
 
-	const std::set<Evoral::Parameter>& what_can_be_automated() const {
-		return Automatable::what_can_be_automated ();
-	}
+	const std::set<Evoral::Parameter>& what_can_be_automated() const;
 
 	void set_automation_state (AutoState);
 	AutoState automation_state() const { return _auto_state; }
