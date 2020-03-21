@@ -134,15 +134,6 @@ public:
 
 	boost::shared_ptr<PanControls> pan_ctrls() const { return _pan_ctrls; }
 
-	static bool equivalent (pan_t a, pan_t b) {
-		return fabsf (a - b) < 0.002; // about 1 degree of arc for a stereo panner
-	}
-
-	static bool equivalent (const PBD::AngularVector& a, const PBD::AngularVector& b) {
-		/* XXX azimuth only, at present */
-		return fabs (a.azi - b.azi) < 1.0;
-	}
-
 	virtual void freeze ();
 	virtual void thaw ();
 
