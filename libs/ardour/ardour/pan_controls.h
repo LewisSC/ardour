@@ -45,8 +45,6 @@ public:
 
 	virtual bool has_state() const = 0;
 
-	virtual std::string describe_parameter(Evoral::Parameter param) = 0;
-
 	virtual void set_automation_state (AutoState) = 0;
 	virtual AutoState automation_state() const = 0;
 

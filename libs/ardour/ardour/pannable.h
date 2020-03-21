@@ -84,10 +84,6 @@ public:
 		return ((_auto_state & Write) || ((_auto_state & (Touch | Latch)) && touching()));
 	}
 
-	std::string describe_parameter(Evoral::Parameter param) {
-		return Automatable::describe_parameter (param);
-	}
-
 	void start_touch (double when);
 	void stop_touch (double when);
 	bool touching() const { return g_atomic_int_get (const_cast<gint*>(&_touching)); }

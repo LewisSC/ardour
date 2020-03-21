@@ -92,12 +92,6 @@ Panner::what_can_be_automated() const
 	return _pan_ctrls->what_can_be_automated ();
 }
 
-string
-Panner::describe_parameter (Evoral::Parameter p)
-{
-	return _pan_ctrls->describe_parameter (p);
-}
-
 int
 Panner::set_state (XMLNode const &, int)
 {
