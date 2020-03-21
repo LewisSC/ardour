@@ -151,16 +151,18 @@ PannerUI::build_astate_menu ()
 	/** TRANSLATORS: this is `Manual' in the sense of automation not being played,
 	    so that changes to pan must be done by hand.
 	*/
+	boost::shared_ptr<PanControls> pan_ctrls = _panshell->pan_ctrls();
+
 	pan_astate_menu->items().push_back (MenuElem (GainMeterBase::astate_string (ARDOUR::Off),
-			sigc::bind ( sigc::mem_fun (_panner.get(), &Panner::set_automation_state), (AutoState) ARDOUR::Off)));
+			sigc::bind ( sigc::mem_fun (pan_ctrls.get(), &PanControls::set_automation_state), (AutoState) ARDOUR::Off)));
 	pan_astate_menu->items().push_back (MenuElem (GainMeterBase::astate_string (ARDOUR::Play),
-			sigc::bind ( sigc::mem_fun (_panner.get(), &Panner::set_automation_state), (AutoState) Play)));
+			sigc::bind ( sigc::mem_fun (pan_ctrls.get(), &PanControls::set_automation_state), (AutoState) Play)));
 	pan_astate_menu->items().push_back (MenuElem (GainMeterBase::astate_string (ARDOUR::Write),
-			sigc::bind ( sigc::mem_fun (_panner.get(), &Panner::set_automation_state), (AutoState) Write)));
+			sigc::bind ( sigc::mem_fun (pan_ctrls.get(), &PanControls::set_automation_state), (AutoState) Write)));
 	pan_astate_menu->items().push_back (MenuElem (GainMeterBase::astate_string (ARDOUR::Touch),
-			sigc::bind (sigc::mem_fun (_panner.get(), &Panner::set_automation_state), (AutoState) Touch)));
+			sigc::bind (sigc::mem_fun (pan_ctrls.get(), &PanControls::set_automation_state), (AutoState) Touch)));
 	pan_astate_menu->items().push_back (MenuElem (GainMeterBase::astate_string (ARDOUR::Latch),
-			sigc::bind ( sigc::mem_fun (_panner.get(), &Panner::set_automation_state), (AutoState) Latch)));
+			sigc::bind ( sigc::mem_fun (pan_ctrls.get(), &PanControls::set_automation_state), (AutoState) Latch)));
 
 }
 
@@ -252,7 +254,7 @@ PannerUI::setup_pan ()
 		delete big_window;
 		big_window = 0;
 
-		boost::shared_ptr<PanControls> pan_ctrls = _panner->pan_ctrls();
+		boost::shared_ptr<PanControls> pan_ctrls = _panshell->pan_ctrls();
 
 		_stereo_panner = new StereoPanner (_panshell);
 		_stereo_panner->set_size_request (-1, 5 * ceilf(7.f * scale));
@@ -279,7 +281,7 @@ PannerUI::setup_pan ()
 	{
 		delete big_window;
 		big_window = 0;
-		boost::shared_ptr<PanControls> pan_ctrls = _panner->pan_ctrls();
+		boost::shared_ptr<PanControls> pan_ctrls = _panshell->pan_ctrls();
 		boost::shared_ptr<AutomationControl> ac = pan_ctrls->pan_azimuth_control ();
 
 		_mono_panner = new MonoPanner (_panshell);
@@ -486,7 +488,7 @@ PannerUI::effective_pan_display ()
 void
 PannerUI::update_pan_sensitive ()
 {
-	bool const sensitive = !(_panner->pan_ctrls()->automation_state() & Play);
+	bool const sensitive = !(_panshell->pan_ctrls()->automation_state() & Play);
 
 	pan_vbox.set_sensitive (sensitive);
 
@@ -521,7 +523,7 @@ PannerUI::pan_automation_state_button_event (GdkEventButton *ev)
 void
 PannerUI::pan_automation_state_changed ()
 {
-	boost::shared_ptr<PanControls> pan_ctrls (_panner->pan_ctrls());
+	boost::shared_ptr<PanControls> pan_ctrls (_panshell->pan_ctrls());
 	pan_automation_state_button.set_label (GainMeterBase::short_astate_string(pan_ctrls->automation_state()));
 
 	bool x = (pan_ctrls->automation_state() != ARDOUR::Off);

@@ -107,12 +107,7 @@ public:
 	/* azimut, width or elevation updated -> recalc signal_position ->  emit Changed */
 	PBD::Signal0<void> SignalPositionChanged;
 
-	void      set_automation_state (AutoState);
-	AutoState automation_state() const;
-
 	virtual std::set<Evoral::Parameter> what_can_be_automated() const;
-
-	bool touching() const;
 
 	static double azimuth_to_lr_fract (double azi) {
 		/* 180.0 degrees=> left => 0.0 */
