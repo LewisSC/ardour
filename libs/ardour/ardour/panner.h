@@ -108,28 +108,6 @@ public:
 	/* azimut, width or elevation updated -> recalc signal_position ->  emit Changed */
 	PBD::Signal0<void> SignalPositionChanged;
 
-	static double azimuth_to_lr_fract (double azi) {
-		/* 180.0 degrees=> left => 0.0 */
-		/* 0.0 degrees => right => 1.0 */
-
-		/* humans can only distinguish 1 degree of arc between two positions,
-		   so force azi back to an integral value before computing
-		*/
-
-		return 1.0 - (rint(azi)/180.0);
-	}
-
-	static double lr_fract_to_azimuth (double fract) {
-		/* fract = 0.0 => degrees = 180.0 => left */
-		/* fract = 1.0 => degrees = 0.0 => right */
-
-		/* humans can only distinguish 1 degree of arc between two positions,
-		   so force azi back to an integral value after computing
-		*/
-
-		return rint (180.0 - (fract * 180.0));
-	}
-
 	/**
 	 *  Pan some input buffers to a number of output buffers.
 	 *
